@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+
+  rabbitmq: # login guest:guest
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db:
+    build: ./db/
+
+
+  monitor:
+    build: 
+      './monitor'
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+        - rabbitmq
+
+
